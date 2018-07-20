@@ -2,6 +2,7 @@
 
 const MongoClient = require( 'mongodb' );
 const ObjectId    = require( 'mongodb' ).ObjectID;
+const xssFilters  = require( 'xss-filters' );
 
 const DB_URI   = process.env.DB;
 const ENDPOINT = '/api/issues/:project';
@@ -13,12 +14,12 @@ module.exports = ( app ) => {
     const query   = req.query;
     if ( query._id )   query._id  = new ObjectId( query._id );
     if ( query.open === '' || query.open === 'true' )  query.open = true;
-    else if ( query.open === 'false' )                 query.open = false;                                      
+    else if ( query.open === 'false' )                 query.open = false;
 
     MongoClient.connect( DB_URI )
       .then( db => {
         const collection = db.collection( project );
-        collection.find( query ).toArray( ( error,doc ) => {
+        collection.find( query ).sort( { updated_on: -1 } ).toArray( ( error,doc ) => {
           if ( !error ) res.json( doc );
           else          res.send( error );
         } );
@@ -36,11 +37,16 @@ module.exports = ( app ) => {
       assigned_to   : req.body.assigned_to || '',
       status_text   : req.body.status_text || '',
       created_by    : req.body.created_by,
-      created_on    : new Date( ),
-      updated_on    : new Date( ),
       open          : true
     };
-    const project = req.params.project;
+    const project = xssFilters.inHTMLData( req.params.project );
+
+    // Sanitize input data.
+    for ( let input in newIssue ) {
+      newIssue[ input ] = xssFilters.inHTMLData( newIssue[ input ] );
+    }
+    newIssue.created_on = Date.now( );
+    newIssue.updated_on = Date.now( );
 
     if ( newIssue.issue_title && newIssue.issue_text && newIssue.created_by ) {
       MongoClient.connect( DB_URI )
@@ -60,19 +66,21 @@ module.exports = ( app ) => {
   } );
 
   app.put( ENDPOINT, ( req,res ) => {
-    const project     = req.params.project;
-    const fields      = req.body;
-    const issueID     = fields._id;
+    const project     = xssFilters.inHTMLData( req.params.project );
+    const inputs      = req.body;
+    const issueID     = xssFilters.inHTMLData( inputs._id );
 
-    delete fields._id;          // Delete from object to check if all other fields are empty.
-    for ( let field in fields ) // Delete all empty properties from object.
-      if ( !fields[ field ] ) delete fields[ field ];
+    delete inputs._id;            // Delete from object to check if all other inputs are empty.
+    for ( let input in inputs ) { // Delete all empty properties and sanitize.
+      if ( !inputs[ input ] ) delete inputs[ input ];
+      else                    inputs[ input ] = xssFilters.inHTMLData( inputs[ input ] );
+    }
 
-    if ( Object.keys( fields ).length > 0 ) {
+    if ( Object.keys( inputs ).length > 0 ) {
       // Assigned here just to meet the user stories.
       // If assigned before, an empty form could be sent.
-      fields.open       = !fields.open;
-      fields.updated_on = new Date( );
+      inputs.open       = !inputs.open;
+      inputs.updated_on = Date.now( );
 
       MongoClient.connect( DB_URI ) // Connect to DB and update document.
         .then( db => {
@@ -80,7 +88,7 @@ module.exports = ( app ) => {
           collection.findAndModify(
             { _id: new ObjectId( issueID ) },
             [ [ '_id',1 ] ],
-            { $set: fields },
+            { $set: inputs },
             { new: true } )  // Returns the updated collection.
               .then( doc => res.send( 'successfully updated' ) )
               .catch( error => res.send( error ) )

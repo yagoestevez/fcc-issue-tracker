@@ -15,12 +15,7 @@ app.use( '/static', express.static( 'public' ) );
 app.use( cors( { origin: '*' } ) ); //For FCC testing purposes only
 app.use( express.urlencoded( { extended: true } ) );
 
-app.use(
-  helmet( {
-    noSniff   : true,
-    xssFilter : true
-  } )
-);
+app.use( helmet.xssFilter( ) );
 
 // Sample front-end.
 app.get( '/:project/', ( req,res ) => {
