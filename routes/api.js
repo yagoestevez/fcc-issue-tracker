@@ -43,7 +43,10 @@ module.exports = ( app ) => {
 
     // Sanitize input data.
     for ( let input in newIssue ) {
-      newIssue[ input ] = xssFilters.inHTMLData( newIssue[ input ] );
+      if ( input !== 'open' ) {
+        newIssue[ input ] = xssFilters.inHTMLData( newIssue[ input ] );
+        if ( newIssue[ input ] === 'undefined' ) newIssue[ input ] = undefined;
+      }
     }
     newIssue.created_on = Date.now( );
     newIssue.updated_on = Date.now( );
@@ -72,8 +75,10 @@ module.exports = ( app ) => {
 
     delete inputs._id;            // Delete from object to check if all other inputs are empty.
     for ( let input in inputs ) { // Delete all empty properties and sanitize.
-      if ( !inputs[ input ] ) delete inputs[ input ];
-      else                    inputs[ input ] = xssFilters.inHTMLData( inputs[ input ] );
+      if ( !inputs[ input ] && input !== 'open' )
+        delete inputs[ input ];
+      else
+        inputs[ input ] = xssFilters.inHTMLData( inputs[ input ] );
     }
 
     if ( Object.keys( inputs ).length > 0 ) {

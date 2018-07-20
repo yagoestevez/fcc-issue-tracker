@@ -17,11 +17,6 @@ app.use( express.urlencoded( { extended: true } ) );
 
 app.use( helmet.xssFilter( ) );
 
-// Sample front-end.
-app.get( '/:project/', ( req,res ) => {
-  res.sendFile( process.cwd( ) + '/views/issue.html' );
-} );
-
 // Index page (static HTML).
 app.get( '/', ( req,res ) => {
   res.sendFile( process.cwd( ) + '/views/index.html' );

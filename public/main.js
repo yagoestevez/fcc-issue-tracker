@@ -11,7 +11,7 @@ $( ( ) => {
         const openStatus = issue.open ? 'OPEN' : 'CLOSED';
         const visibility = openStatus === 'CLOSED' ? 'hidden' : '';
         const card = `
-          <div class="card card-block col-12 col-md-3">
+          <div class="card card-block col-12 col-md-5 col-xl-3">
             <div class="card-header text-white ${openStatus==='CLOSED' ? 'bg-lightgreen' : 'bg-danger'}">
               <h4 class="card-title">${issue.issue_title}</h4>
               <p><small>Created by: ${issue.created_by}</small></p>

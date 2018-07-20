@@ -13,23 +13,23 @@
     <link rel="stylesheet" href="/static/main.css">
   </head>
   <body class="text-center">
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-12 col-md-3"></div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-3 col-lg-4"></div>
+        <div class="col-12 col-md-6 col-lg-4">
           <form id="newIssue" class="form" action="/api/">
             <img src="https://d33wubrfki0l68.cloudfront.net/4ba4ee4d1ac4caf5c0c3fa44ccc8fddd5bd11222/3f5b1/img/freecodecamp-alternative.png" alt="FreeCodeCamp Logo">
             <h1 class="h3 mt-3 mb-3 font-weight-normal">Issue Tracker</h1>
             <label for="title" class="sr-only">Issue Title</label>
-            <input id="title" name="issue_title" class="form-control mb-4" type="text" name="input" placeholder="Title" required autofocus>
+            <input id="title" name="issue_title" class="form-control mb-2" type="text" name="input" placeholder="Title" required autofocus>
             <label for="text" class="sr-only">Issue Text</label>
-            <textarea id="text" name="issue_text" class="form-control mb-4" type="text" name="input" placeholder="Text" required></textarea>
+            <textarea id="text" name="issue_text" class="form-control mb-2" type="text" name="input" placeholder="Text" required></textarea>
             <label for="creation" class="sr-only">Created By</label>
-            <input id="creation" name="created_by" class="form-control mb-4" type="text" name="input" placeholder="Created by" required>
+            <input id="creation" name="created_by" class="form-control mb-2" type="text" name="input" placeholder="Created by" required>
             <label for="assigned" class="sr-only">Created By</label>
-            <input id="assigned" name="assigned_to" class="form-control mb-4" type="text" name="input" placeholder="Assigned to">
+            <input id="assigned" name="assigned_to" class="form-control mb-2" type="text" name="input" placeholder="Assigned to">
             <label for="status-text" class="sr-only">Status Text</label>
-            <input id="status-text" name="assigned_to" class="form-control mb-4" type="text" name="input" placeholder="Status Text">
+            <input id="status-text" name="assigned_to" class="form-control mb-2" type="text" name="input" placeholder="Status Text">
             <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Submit Issue</button>
           </form>
 
@@ -39,10 +39,10 @@
             </p>
           </footer>
         </div>
-        <div class="col-12 col-md-3"></div>
+        <div class="col-12 col-md-3 col-lg-4"></div>
       </div>
       <!-- Display for the Issues -->
-      <div class="container h-100 mt-5">
+      <div class="container-fluid h-100 mt-5">
         <hr>
         <h3 id="displayTitle"></h3>
         <div class="row" id='displayIssues'></div>
