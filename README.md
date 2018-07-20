@@ -8,6 +8,10 @@ All tests passed. Both client and server working as expected.
 
 If you want to try the converter, open [this link on Glitch](https://yagoestevez-issue-tracker.glitch.me/).
 
+#### Test the app
+
+To test the app, just run ```npm test``` (after ```npm i```, of course).
+
 ##### User Stories
 
 1. Prevent cross site scripting(XSS attack).
